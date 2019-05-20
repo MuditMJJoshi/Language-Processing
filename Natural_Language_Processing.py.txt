@@ -1,0 +1,136 @@
+import collections
+import math
+import matplotlib.pyplot as plt
+#cosine similarity
+def simulator(x, y):
+dX = 0
+dY = 0
+dXY = 0
+newlength = len(x)
+if len(x) > len(y):
+newlength = len(y)
+for i in range(newlength):
+dX = dX + x[i] * x[i]
+dY = dY + y[i] * y[i]
+dXY = dXY + x[i] * y[i]
+normX = math.sqrt(dX)
+normY = math.sqrt(dY)
+return dXY / (normX * normY)
+wdCt1 = 0
+wdCt2 = 0
+sbCrps1 = collections.Counter()
+sbCrps2 = collections.Counter()
+tknCt = 0
+bow1 =[]
+bow2 = []
+v1 = []
+v2 = []
+corpus = collections.Counter()
+for i in range(1,512):
+if i < 10:
+fileName = "00"+str(i)
+elif i < 100:
+fileName = "0"+str(i)
+else:
+fileName = str(i)
+f = open("files/news/{}.txt".format(fileName),"r+",encoding="utf-8");
+for i,line in enumerate(f):
+Split = line.strip().split()
+for word in Split:
+tknCt += 1;
+corpus[word] +=1;
+if fileName == '098':
+wdCt1 += 1;
+sbCrps1[word] += 1;
+elif fileName == '287':
+wdCt2 += 1;
+sbCrps2[word] += 1;
+f.close()
+#Q1-1
+print("Total word and token {0} and {1}".format(len(corpus),tknCt))
+#Q1-2
+print()
+print("Top 20 types with count")
+print(corpus.most_common(20))
+#Q1-3
+#1
+rnList = [ i for i,data in enumerate(corpus.most_common())]
+coutList = [data[1] for data in corpus.most_common()]
+fig1 = plt
+fig1.plot(rnList, coutList)
+fig1.ylabel('Count')
+fig1.xlabel('Rank')
+fig1.title('Zipfs Law')
+fig1.show()
+#2
+fig2 = plt
+fig2.plot(rnList, coutList)
+fig2.yscale('Log')
+fig2.xscale('Log')
+fig2.ylabel('Countlog')
+fig2.xlabel('Ranklog')
+fig2.title('Zipfslog')
+fig2.show()
+#Q1-4
+tiDict1 = {}
+for tup in sbCrps1.most_common():
+HitSet = set();
+bow1.append(tup[1]/wdCt1)
+for i in range(1,512):
+if i < 10:
+fileName = "00"+str(i)
+elif i < 100:
+fileName = "0"+str(i)
+else:
+fileName = str(i)
+f = open("files/news/{}.txt".format(fileName),"r+",encoding="utf-8");
+for i,line in enumerate(f):
+Split = line.strip().split()
+if tup[0] in line:
+HitSet.add(fileName)
+f.close()
+tf = sbCrps1[tup[0]]/wdCt1
+if len(HitSet) == 0:
+idf = math.log(512/(len(HitSet)+1),10)
+else:
+idf = math.log(512/len(HitSet),10)
+tfidf = tf * idf
+tiDict1[tup[0]] = tfidf
+v1.append(tfidf)
+topRate = dict(collections.Counter(tiDict1).most_common(10))
+print(topRate)
+#Q1-5
+tiDict2 = {}
+for tup in sbCrps2.most_common():
+HitSet = set();
+bow2.append(tup[1]/wdCt2)
+for i in range(1,512):
+if i < 10:
+fileName = "00"+str(i)
+elif i < 100:
+fileName = "0"+str(i)
+else:
+fileName = str(i)
+f = open("files/news/{}.txt".format(fileName),"r+",encoding="utf-8");
+for i,line in enumerate(f):
+Split = line.strip().split()
+if tup[0] in line:
+HitSet.add(fileName)
+f.close()
+tf = sbCrps2[tup[0]]/wdCt1
+if len(HitSet) == 0:
+idf = math.log(512/(len(HitSet)+1),10)
+else:
+idf = math.log(512/len(HitSet),10)
+tfidf = tf * idf
+tiDict2[tup[0]] = tfidf
+v2.append(tfidf)
+Bowsim = simulator(bow1,bow2)
+TIsimulator = simulator(v1,v2)
+print(Bowsim)
+print(TIsimulator)
+
+
+
+
+# readfile(read)

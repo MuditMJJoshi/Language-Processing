@@ -1,0 +1,53 @@
+
+Q2)
+import numpy as np
+import sys
+import csv
+import pandas as pd
+from itertools import islice
+from collections import defaultdict
+import math
+import matplotlib.pyplot as plt
+# def readfile(file):
+def mean(df, str):
+sum = 0
+count = 0
+list = df[str]
+for val in list:
+sum = sum + val
+count = count + 1
+return sum / count
+def stdev(df, str):
+list = df[str]
+stdev = np.std(list)
+return stdev
+def allstdev(df):
+stdev_list = []
+for column in df.columns[2:]:
+stdev_list.append(find_stdev(df, column))
+return stdev_list
+def allmean(df):
+mean_list = []
+for column in df.columns[2:]:
+mean_list.append(find_mean(df, column))
+return mean_list
+def manipu(df, label, features):
+stdev_list = all_stdev(df)
+mean_list = all_mean(df)
+norm_features = features
+count = 0
+def normal(val, stdev, mean):
+norm = (val - mean)
+norm = norm / stdev
+return norm
+def eigenv(df, val):
+def main():
+df = pd.read_csv('venv/cardata.csv')
+label = df['Category']
+features = df.loc[:, 'Retail($)':]
+print(find_mean(df, 'Retail($)')) # finds non-normalized mean of price
+print(find_mean(df, 'Horsepower')) # finds non-normalized mean of horsepower
+manipulate(df, label, features)
+# find_eigenvalue(1)
+#find_eigenvalue(3)
+# Read car file into list of tuples
